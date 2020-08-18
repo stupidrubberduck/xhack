@@ -59,7 +59,7 @@
       }
 
       move(e){
-        ctx.clearRect(0, 0, CAN_W, CAN_H);
+        ctx.clearRect(this.posiX, this.posiY, this.showW, this.showH);
         switch(e.key){ //e.keyで受け取るとブラウザ間で返ってくる文字列が違う？
           case 'ArrowUp':
             this.dir = CHAR_B;
