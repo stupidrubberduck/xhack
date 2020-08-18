@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas" width="640" height="480" style="background-color: skyblue"></canvas>
+  <script>
+    'use strict';
+
+    const can = document.getElementById('canvas');
+    const ctx = can.getContext('2d');
+    const CAN_W = can.width; //キャンバス横幅
+    const CAN_H = can.height; //キャンバス縦幅
+    const POSI_CENTER_X = CAN_W / 2 - 120 / 4; //とりあえず１キャラしかいないのでセンター位置の値は固定値
+    const POSI_CENTER_Y = CAN_H / 2 - Math.floor(158 / 4);　//とりあえず１キャラしかいないのでセンター位置の値は固定値
+    const CHAR_F = 0; //前向き
+    const CHAR_B = 2; //後向き
+    const CHAR_R = 6; //右向き
+    const CHAR_L = 4; //左向き
+
+    class Char{
+      constructor(posiX = POSI_CENTER_X, posiY = POSI_CENTER_Y, dir = 0){ // 何も指定しなければ真ん中に向きは正面
+        this.img = new Image(); //画像生成
+        this.img.src = 'img/dosei3.png';
+        // this.img = img; //画像（全部同じだけど
+        this.imgW = 120; //実寸横幅
+        this.imgH = 158;　//実寸縦幅
+        this.showW = this.imgW / 2; //表示サイズ横幅（実寸の半分）
+        this.showH = this.imgH / 2; //表示サイズ縦幅（実寸の半分）
+        this.dir = dir; //向き（デフォは正面）
+        this.posiX = posiX; //位置（初期値は真ん中になるように）
+        this.posiY = posiY; //位置（初期値は真ん中になるように）
+        this.step = 0; //歩数切り替え用
+        
+        this.img.addEventListener('load', () =>{
+          this.drawImg();
+        });
+      }
+
+      drawImg(){
+        ctx.drawImage(
+          this.img, //画像
+          this.imgW*(this.dir+this.checkStep(this.step)), //スプライト開始位置X 0正面 2後面 4左面 6右面
+          0, //スプライト開始位置Y　横並びスプライトなのでこれはみんな同じなので０
+          120, //どこまで切り取るかX １コマのサイズはみんな同じなので固定サイズ 切り取り開始位置からどれだけか
+          this.imgH, //画像からどこまで切り取るかY
+          this.posiX, //キャンバスのどこに置くかX
+          this.posiY, //キャンバスのどこに置くかY
+          this.showW, //表示するときのサイズ横幅
+          this.showH //表示するときのサイズ縦幅
+        );
+        // setTimeout(() => {
+        //   this.drawImg();
+        // }, 1000);
+        this.step += 1;
+      }
+
+      move(e){
+        ctx.clearRect(0, 0, CAN_W, CAN_H);
+        switch(e.key){ //e.keyで受け取るとブラウザ間で返ってくる文字列が違う？
+          case 'ArrowUp':
+            this.dir = CHAR_B;
+            this.posiY -= 10;
+            break;
+          case 'ArrowRight':
+            this.dir = CHAR_R;
+            this.posiX += 10;
+            break;
+          case 'ArrowDown':
+            this.dir = CHAR_F;
+            this.posiY += 10;
+            break;
+          case 'ArrowLeft':
+            this.dir = CHAR_L;
+            this.posiX -= 10;
+            break;
+        }
+        this.drawImg();
+      }
+
+      checkStep(num){
+        if(num % 2 != 0){
+          num = 0;
+        }else{
+          num = 1;
+        }
+        return num;
+      }
+
+    }
+
+    
+    const char = new Char();
+
+    window.addEventListener('keydown', (e) =>{
+      char.move(e);
+    });
+
+  </script>
+</body>
+</html>
