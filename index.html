@@ -52,14 +52,14 @@
           this.showW, //表示するときのサイズ横幅
           this.showH //表示するときのサイズ縦幅
         );
-        // setTimeout(() => {
-        //   this.drawImg();
-        // }, 1000);
         this.step += 1;
       }
 
+      update() {
+        this.drawImg();
+      }
+
       move(e){
-        ctx.clearRect(this.posiX, this.posiY, this.showW, this.showH);
         switch(e.key){ //e.keyで受け取るとブラウザ間で返ってくる文字列が違う？
           case 'ArrowUp':
             this.dir = CHAR_B;
@@ -78,7 +78,6 @@
             this.posiX -= 10;
             break;
         }
-        this.drawImg();
       }
 
       checkStep(num){
@@ -93,11 +92,20 @@
     }
 
     
-    const char = new Char();
+    const char1 = new Char();
+    const char2 = new Char(100,100);
 
     window.addEventListener('keydown', (e) =>{
-      char.move(e);
+      char1.move(e);
+      char2.move(e);
     });
+
+    // メインループ
+    setInterval(() => {
+      ctx.clearRect(0,0,CAN_W,CAN_H)
+      char1.update()
+      char2.update()
+    }, 200)
 
   </script>
 </body>
